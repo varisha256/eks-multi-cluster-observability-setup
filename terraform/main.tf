@@ -12,7 +12,7 @@ module "eks_platform" {
   private_subnets  = module.vpc.private_platform_subnet_ids
   
   endpoint_public_access = true
-  endpoint_public_access_cidrs = ["223.185.47.180/32"]  # Restrict to your IP
+  endpoint_public_access_cidrs = ["<YOUR_IP>"]  # Restrict to your IP
 }
 
 module "eks_workload" {
@@ -22,5 +22,5 @@ module "eks_workload" {
   private_subnets  = module.vpc.private_workload_subnet_ids
   
   endpoint_public_access = true
-  endpoint_public_access_cidrs = ["223.185.47.180/32"]  # Restrict to your IP
+  endpoint_public_access_cidrs = ["<YOUR_IP>"]  # Restrict to your IP
 }
