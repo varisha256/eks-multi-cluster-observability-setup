@@ -1,0 +1,67 @@
+services:
+  # Platform Services
+  argocd:
+    image: quay.io/argoproj/argocd:v2.12.4
+    platform: linux/amd64
+    ports:
+      - "8080:8080"
+    environment:
+      - ARGOCD_SERVER_INSECURE=true
+    networks:
+      - app-network
+
+  grafana:
+    image: grafana/grafana:11.3.0
+    platform: linux/amd64
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - app-network
+
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    platform: linux/amd64
+    ports:
+      - "9090:9090"
+    networks:
+      - app-network
+
+  # Workload Services
+  tictactoe:
+    image: nginx:alpine
+    platform: linux/amd64
+    ports:
+      - "80:80"
+    networks:
+      - app-network
+
+  # Solar System App
+  mongodb:
+    image: mongo:7.0
+    platform: linux/amd64
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password123
+      - MONGO_INITDB_DATABASE=solarsystem
+    networks:
+      - app-network
+
+  solar-system:
+    image: siddharth67/solar-system:v1
+    platform: linux/amd64
+    ports:
+      - "3001:3000"
+    environment:
+      - MONGO_URL=mongodb://admin:password123@mongodb:27017/solarsystem?authSource=admin
+    depends_on:
+      - mongodb
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

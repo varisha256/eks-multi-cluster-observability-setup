@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solar-system
+  namespace: workload
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: solar-system
+  template:
+    metadata:
+      labels:
+        app: solar-system
+    spec:
+      containers:
+      - name: solar-system
+        image: siddharth67/solar-system:v1
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MONGO_URL
+          value: "mongodb://admin:password123@mongodb:27017/solarsystem?authSource=admin"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: solar-system
+  namespace: workload
+spec:
+  selector:
+    app: solar-system
+  ports:
+  - port: 3000
+    targetPort: 3000
+  type: ClusterIP
