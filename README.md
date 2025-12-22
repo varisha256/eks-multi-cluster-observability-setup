@@ -67,3 +67,6 @@ GitHub Actions workflows handle:
 - Infrastructure deployment
 - Platform applications deployment  
 - Workload applications deployment
+
+## Status
+🚧 In Progress – Incrementally adding components with production-grade documentation.
