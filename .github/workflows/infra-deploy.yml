@@ -5,7 +5,15 @@ on:
   #   branches: [main]
   #   paths: ['terraform/**']
   workflow_dispatch:
-
+    inputs:
+      action:
+        description: 'Terraform action to perform'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+        - apply
+        - destroy
 
 jobs:
   terraform:
@@ -36,5 +44,9 @@ jobs:
       run: terraform plan
 
     - name: Terraform Apply
-      if: github.ref == 'refs/heads/main'
+      if: github.ref == 'refs/heads/main' && (github.event.inputs.action == 'apply' || github.event.inputs.action == '')
       run: terraform apply -auto-approve
+
+    - name: Terraform Destroy
+      if: github.event.inputs.action == 'destroy'
+      run: terraform destroy -auto-approve
