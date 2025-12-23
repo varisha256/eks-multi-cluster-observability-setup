@@ -1,46 +1,47 @@
 name: Workload Deployment
 
 on:
-  push:
-    branches: [main]
-    paths: ['eks-deployments/workload/**']
+  # push:
+  #   branches: [main]
+  #   paths: ['eks-deployments/workload/**']
   workflow_dispatch:
+
 
 jobs:
   deploy-workload:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-west-2
-    
+
     - name: Update kubeconfig for workload cluster
       run: aws eks update-kubeconfig --region us-west-2 --name workload-eks
-    
+
     - name: Deploy workload namespace
       run: kubectl apply -f eks-deployments/workload/tictactoe/00-namespace.yaml
-    
+
     - name: Deploy workload ingress namespace
       run: kubectl apply -f eks-deployments/workload/ingress/00-namespace.yaml
-    
+
     - name: Deploy MongoDB
       run: kubectl apply -f eks-deployments/workload/solar-system/mongodb.yaml
-    
+
     - name: Wait for MongoDB
       run: kubectl wait --for=condition=available --timeout=300s deployment/mongodb -n workload
-    
+
     - name: Deploy applications
       run: |
         kubectl apply -f eks-deployments/workload/tictactoe/
         kubectl apply -f eks-deployments/workload/solar-system/solar-system.yaml
         kubectl apply -f eks-deployments/workload/ingress/
-    
+
     - name: Wait for deployments
       run: |
         kubectl wait --for=condition=available --timeout=300s deployment/tictactoe -n workload
