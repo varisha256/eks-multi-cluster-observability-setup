@@ -23,7 +23,6 @@ variable "addons" {
     { name = "kube-proxy" },
     { name = "amazon-cloudwatch-observability" },
     { name = "aws-ebs-csi-driver" },
-    { name = "eks-pod-identity-agent" },
-    { name = "aws-load-balancer-controller" }
+    { name = "eks-pod-identity-agent" }
   ]
 }
